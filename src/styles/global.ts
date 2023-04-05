@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { globalCss } from '@ignite-ui/react'
 
 export const globalStyles = globalCss({
