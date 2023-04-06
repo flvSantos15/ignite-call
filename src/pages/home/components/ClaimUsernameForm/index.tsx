@@ -1,4 +1,5 @@
 /* eslint-disable prettier/prettier */
+import { useRouter } from 'next/router'
 import { TextInput, Button, Text } from '@ignite-ui/react'
 import { ArrowRight } from 'phosphor-react'
 import { useForm } from 'react-hook-form'
@@ -20,16 +21,23 @@ const claimUsernameSchema = z.object({
 type ClaimUsernameFormData = z.infer<typeof claimUsernameSchema>
 
 export function ClaimUsernameForm() {
+  const router = useRouter()
   const {
     register,
     handleSubmit,
-    formState: { errors }
+    formState: { errors, isSubmitting }
   } = useForm<ClaimUsernameFormData>({
     resolver: zodResolver(claimUsernameSchema)
   })
 
   const handleClaimUsername = async (data: ClaimUsernameFormData) => {
-    console.log(data)
+    try {
+      const { username } = data
+
+      await router.push(`/register?username=${username}`)
+    } catch (error) {
+      console.log('error in handleClaimUsername', error)
+    }
   }
 
   return (
@@ -41,7 +49,7 @@ export function ClaimUsernameForm() {
           placeholder="seu-usuario"
           {...register('username')}
         />
-        <Button size="sm" type="submit">
+        <Button size="sm" type="submit" disabled={isSubmitting}>
           Reservar
           <ArrowRight />
         </Button>

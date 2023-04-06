@@ -6,6 +6,8 @@ import { useForm } from 'react-hook-form'
 import { Container, Form, FormError, Header } from './styles'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/router'
+import { useEffect } from 'react'
 
 const registerFormSchema = z.object({
   username: z
@@ -23,9 +25,12 @@ const registerFormSchema = z.object({
 type RegisterFormData = z.infer<typeof registerFormSchema>
 
 export default function Register() {
+  const router = useRouter()
+
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting }
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerFormSchema)
@@ -34,6 +39,12 @@ export default function Register() {
   const handleRegister = async (data: RegisterFormData) => {
     console.log(data)
   }
+
+  useEffect(() => {
+    if (router.query.username) {
+      setValue('username', router.query.username as string)
+    }
+  }, [router.query?.username, setValue])
 
   return (
     <Container>
