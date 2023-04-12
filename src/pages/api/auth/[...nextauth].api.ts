@@ -42,6 +42,12 @@ export function buildNextAuthOptions(
         }
         // se sucesso retorno true
         return true
+      },
+      async session({ session, user }) {
+        return {
+          ...session,
+          user
+        }
       }
     }
   }
