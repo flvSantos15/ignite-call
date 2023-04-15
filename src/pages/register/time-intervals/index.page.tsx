@@ -22,8 +22,9 @@ import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { getWeekDay } from '@/utils/get-week-day'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { convertTimeStringToMinutes } from '@/utils/convert-time-string-to-minutes'
 
-const TimeIntervalFormsSchema = z.object({
+const TimeIntervalsFormSchema = z.object({
   intervals: z
     .array(
       z.object({
@@ -38,9 +39,31 @@ const TimeIntervalFormsSchema = z.object({
     .refine((intervals) => intervals.length > 0, {
       message: 'Você precisar selecionar pelo menos um dia da semana!'
     })
+    .transform((intervals) => {
+      return intervals.map((interval) => {
+        return {
+          weekDay: interval.weekDay,
+          startTimeInMinutes: convertTimeStringToMinutes(interval.startTime),
+          endTimeInMinutes: convertTimeStringToMinutes(interval.endTime)
+        }
+      })
+    })
+    .refine(
+      (intervals) => {
+        return intervals.every(
+          (interval) =>
+            interval.endTimeInMinutes - 60 >= interval.startTimeInMinutes
+        )
+      },
+      {
+        message:
+          'O horário de término deve ser pelo meno 1h distante do início.'
+      }
+    )
 })
 
-type TimeIntervalsFormData = z.infer<typeof TimeIntervalFormsSchema>
+type TimeIntervalsFormInput = z.input<typeof TimeIntervalsFormSchema>
+type TimeIntervalsFormOutput = z.output<typeof TimeIntervalsFormSchema>
 
 export default function TimeIntervals() {
   const {
@@ -49,8 +72,8 @@ export default function TimeIntervals() {
     control,
     watch,
     formState: { isSubmitting, errors }
-  } = useForm({
-    resolver: zodResolver(TimeIntervalFormsSchema),
+  } = useForm<TimeIntervalsFormInput>({
+    resolver: zodResolver(TimeIntervalsFormSchema),
     defaultValues: {
       intervals: [
         { weekDay: 0, enabled: false, startTime: '08:00', endTime: '18:00' },
@@ -73,9 +96,10 @@ export default function TimeIntervals() {
 
   const intervals = watch('intervals')
 
-  const handleSetTimeIntervals = async (data: TimeIntervalsFormData) => {
+  const handleSetTimeIntervals = async (data: any) => {
+    const formData = data as TimeIntervalsFormOutput
     try {
-      console.log(data)
+      console.log(formData)
     } catch (err) {
       console.log(err, 'err')
     }
