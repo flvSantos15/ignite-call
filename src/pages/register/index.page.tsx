@@ -96,7 +96,7 @@ export default function Register() {
           )}
         </label>
 
-        <Button type="submit">
+        <Button type="submit" disabled={isSubmitting}>
           {isSubmitting ? 'Carregando...' : 'Próximo passo'}
           <ArrowRight />
         </Button>
