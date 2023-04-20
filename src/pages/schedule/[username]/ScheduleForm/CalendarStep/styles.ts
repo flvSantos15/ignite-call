@@ -1,0 +1,10 @@
+/* eslint-disable prettier/prettier */
+import { styled } from '@ignite-ui/react'
+
+export const Container = styled('div', {
+  margin: '$6 auto 0',
+  padding: 0,
+  display: 'grid',
+  maxWidth: '100%',
+  position: 'relative'
+})
