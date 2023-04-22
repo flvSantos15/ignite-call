@@ -37,7 +37,7 @@ export const FormHeader = styled('div', {
   }
 })
 
-export const FormError = styled('div', {
+export const FormError = styled(Text, {
   color: '#f75a68'
 })
 
