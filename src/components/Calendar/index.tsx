@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import dayjs from 'dayjs'
 import { CaretLeft, CaretRight } from 'phosphor-react'
@@ -37,6 +37,30 @@ export function Calendar() {
 
   const currentMonth = currentDate.format('MMMM')
   const currentYear = currentDate.format('YYYY')
+
+  const calendarWeeks = useMemo(() => {
+    // aqui pego os dias do mês atual
+    const daysInMonthArray = Array.from({
+      length: currentDate.daysInMonth()
+    }).map((_, i) => {
+      return currentDate.set('date', i + 1)
+    })
+
+    const firstWeekDay = currentDate.get('day')
+
+    // aqui pego os últimos dias do mês anterior
+    const previousMonthLastDaysFillArray = Array.from({
+      length: firstWeekDay
+    })
+      .map((_, i) => {
+        return currentDate.subtract(i + 1, 'day')
+      })
+      .reverse()
+
+    return [...previousMonthLastDaysFillArray, ...daysInMonthArray]
+  }, [currentDate])
+
+  console.log(calendarWeeks)
 
   return (
     <CalendarContainer>
