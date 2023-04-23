@@ -1,5 +1,11 @@
 /* eslint-disable prettier/prettier */
+import { useState } from 'react'
+
+import dayjs from 'dayjs'
 import { CaretLeft, CaretRight } from 'phosphor-react'
+
+import { getWeekDays } from '@/utils/get-week-day'
+
 import {
   CalendarActions,
   CalendarBody,
@@ -8,22 +14,42 @@ import {
   CalendarHeader,
   CalendarTitle
 } from './styles'
-import { getWeekDays } from '@/utils/get-week-day'
 
 export function Calendar() {
+  const [currentDate, setCurrentDate] = useState(() => {
+    return dayjs().set('date', 1)
+  })
+
+  const handlePreviousMonth = () => {
+    // função para subtrair 1 mês
+    const previousMonthDate = currentDate.subtract(1, 'month')
+
+    setCurrentDate(previousMonthDate)
+  }
+
+  const handleNextMonth = () => {
+    const nextMonthDate = currentDate.add(1, 'month')
+
+    setCurrentDate(nextMonthDate)
+  }
+
   const shortWeekDays = getWeekDays({ short: true })
+
+  const currentMonth = currentDate.format('MMMM')
+  const currentYear = currentDate.format('YYYY')
+
   return (
     <CalendarContainer>
       <CalendarHeader>
         <CalendarTitle>
-          Abril <span>2023</span>
+          {currentMonth} <span>{currentYear}</span>
         </CalendarTitle>
 
         <CalendarActions>
-          <button>
+          <button onClick={handlePreviousMonth} title="Previous month">
             <CaretLeft />
           </button>
-          <button>
+          <button onClick={handleNextMonth} title="Next month">
             <CaretRight />
           </button>
         </CalendarActions>

@@ -9,11 +9,12 @@ import {
 } from './styles'
 
 export function CalendarStep() {
-  const isDaySelected = true
+  const isDaySelected = false
 
   return (
     <Container isTimePickerOpen={isDaySelected}>
       <Calendar />
+
       {isDaySelected && (
         <TimePicker>
           <TimePickerHeader>
