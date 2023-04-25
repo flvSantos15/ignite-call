@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/router'
 import dayjs from 'dayjs'
 
@@ -14,6 +14,7 @@ import {
   TimePickerItem,
   TimePickerList
 } from './styles'
+import { useQuery } from '@tanstack/react-query'
 
 interface Availability {
   possibleTimes: number[]
@@ -25,7 +26,7 @@ export function CalendarStep() {
   const { username } = router.query
 
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
-  const [availability, setAvailability] = useState<Availability | null>(null)
+  // const [availability, setAvailability] = useState<Availability | null>(null)
 
   const isDaySelected = !!selectedDate
 
@@ -34,23 +35,25 @@ export function CalendarStep() {
     ? dayjs(selectedDate).format('DD[ de ]MMMM')
     : null
 
-  const getAvailability = async () => {
-    const { data } = await api.get(`/users/${username}/availabillity`, {
-      params: {
-        date: dayjs(selectedDate).format('YYYY-MM-DD')
-      }
-    })
+  const selectedDataWithoutTime = selectedDate
+    ? dayjs(selectedDate).format('YYYY-MM-DD')
+    : null
 
-    setAvailability(data)
-  }
+  const { data: availability } = useQuery<Availability>(
+    ['availability', selectedDataWithoutTime],
+    async () => {
+      const { data } = await api.get(`/users/${username}/availabillity`, {
+        params: {
+          date: selectedDataWithoutTime
+        }
+      })
 
-  useEffect(() => {
-    if (!selectedDate) {
-      return
+      return data
+    },
+    {
+      enabled: !!selectedDate
     }
-
-    getAvailability()
-  }, [selectedDate])
+  )
 
   return (
     <Container isTimePickerOpen={isDaySelected}>
