@@ -20,7 +20,7 @@ import {
 } from './styles'
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { getWeekDay } from '@/utils/get-week-day'
+import { getWeekDays } from '@/utils/get-week-day'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { convertTimeStringToMinutes } from '@/utils/convert-time-string-to-minutes'
 import { api } from '@/lib/axios'
@@ -90,7 +90,7 @@ export default function TimeIntervals() {
     }
   })
 
-  const weekDays = getWeekDay()
+  const weekDays = getWeekDays()
 
   const { fields } = useFieldArray({
     control,
