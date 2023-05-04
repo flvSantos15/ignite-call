@@ -65,12 +65,16 @@ export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
   const currentYear = currentDate.format('YYYY')
 
   const { data: blockedDates } = useQuery<IBlockedDates>(
-    ['blocked-dates', currentDate.get('year'), currentDate.get('month')],
+    [
+      'blocked-dates',
+      currentDate.get('year'),
+      String(currentDate.get('month') + 1).padStart(2, '0')
+    ],
     async () => {
       const { data } = await api.get(`/users/${username}/blocked-dates`, {
         params: {
           year: currentDate.get('year'),
-          month: currentDate.get('month') + 1
+          month: String(currentDate.get('month') + 1).padStart(2, '0')
         }
       })
 

@@ -43,23 +43,20 @@ export default async function handle(
     )
   })
 
+  const yearMonth = `${year}-${String(month).padStart(2, '0')}`
+
   const blockedDatesRaw: Array<{ date: number }> = await prisma.$queryRaw`
     SELECT
-      EXTRACT(DAY FROM S.date) AS date,
-      COUNT(S.date) AS amount
+      EXTRACT(DAY FROM S.DATE) AS date,
+      COUNT(S.date) AS amount,
       ((UTI.time_end_in_minutes - UTI.time_start_in_minutes) / 60) AS size
-
     FROM schedulings S
-
     LEFT JOIN user_time_intervals UTI
       ON UTI.week_day = WEEKDAY(DATE_ADD(S.date, INTERVAL 1 DAY))
-
     WHERE S.user_id = ${user.id}
-      AND DATE_FORMAT(S.date, "%Y-%m") = ${`${year}-${month}`}
-
-    GROUP BY EXTRACT(DAY FROM S.date)
-      ((UTI.time_end_in_minutes - UTI.time_start_in_minutes) / 60) AS size
-
+      AND DATE_FORMAT(S.date, "%Y-%m") = ${yearMonth}
+    GROUP BY EXTRACT(DAY FROM S.DATE),
+      ((UTI.time_end_in_minutes - UTI.time_start_in_minutes) / 60)
     HAVING amount >= size
   `
 
