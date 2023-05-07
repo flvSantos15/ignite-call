@@ -32,7 +32,7 @@ export function CalendarStep({ onSelecDateTime }: CalendarStepProps) {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
   // const [availability, setAvailability] = useState<Availability | null>(null)
 
-  const isDaySelected = !!selectedDate
+  const isDateSelected = !!selectedDate
 
   const weekDay = selectedDate ? dayjs(selectedDate).format('dddd') : null
   const describedDate = selectedDate
@@ -69,10 +69,10 @@ export function CalendarStep({ onSelecDateTime }: CalendarStepProps) {
   }
 
   return (
-    <Container isTimePickerOpen={isDaySelected}>
+    <Container isTimePickerOpen={isDateSelected}>
       <Calendar selectedDate={selectedDate} onDateSelected={setSelectedDate} />
 
-      {isDaySelected && (
+      {isDateSelected && (
         <TimePicker>
           <TimePickerHeader>
             {weekDay} <span>{describedDate}</span>
